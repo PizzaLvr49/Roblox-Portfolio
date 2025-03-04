@@ -89,11 +89,7 @@ Increasing this allows more history but may impact performance.
   - The tolerance value should not exceed `10`. Adjust it to a lower value.
 
 ## 👥 Contributors
-- **[Your Name]** - Developer
+- **PizzaLvr49** - Developer
 
 ## 📜 License
 This project is licensed under the **MIT License**.
-
----
-
-Would you like to add any additional details or modify specific sections? 😊
