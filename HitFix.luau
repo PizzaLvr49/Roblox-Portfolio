@@ -4,9 +4,9 @@ local UpdateLocal = script:WaitForChild("UpdateLocal")
 local Serializer = require(script:WaitForChild("Serializer"))
 
 local HitFix = {}
-HitFix.Registers = {}
-local StorageTime = 1
 self = HitFix
+self.Registers = {}
+self.StorageTime = 1
 
 function HitFix:CreateHitBoxRegister(player: Player)
 	if RunService:IsClient() then error("CreateHitBoxRegister must be invoked from the server") end
@@ -107,11 +107,11 @@ end
 
 RunService.Stepped:Connect(function()
 	for player, register in pairs(self.Registers) do
-		if tick() - RemoveOldestTimestamp(register.Local) > StorageTime then
+		if tick() - RemoveOldestTimestamp(register.Local) > self.StorageTime then
 			local oldest = RemoveOldestTimestamp(register.Local)
 			register.Local[oldest] = nil
 		end
-		if tick() - RemoveOldestTimestamp(register.Server) > StorageTime then
+		if tick() - RemoveOldestTimestamp(register.Server) > self.StorageTime then
 			local oldest = RemoveOldestTimestamp(register.Server)
 			register.Server[oldest] = nil
 		end
