@@ -25,7 +25,7 @@ It looks like you have a **Hitbox Validation System** for Roblox, which ensures 
 - **Event-driven synchronization** between client and server.
 
 ## 📥 Installation
-1. Insert the `HitFix` module into `ReplicatedStorage` or `ServerScriptService`.
+1. Insert the `HitFix` module into `ReplicatedStorage`.
 2. Ensure `UpdateLocal` is a **RemoteEvent** in the same folder as the script.
 3. Place `Serializer` (if required) inside the script’s directory.
 4. Require `HitFix` in your server scripts to manage hitbox validation.
