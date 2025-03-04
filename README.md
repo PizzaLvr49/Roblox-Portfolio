@@ -58,7 +58,7 @@ Compares client-side and server-side hitboxes to validate if a hit is legitimate
 ## ⚙️ Configuration
 Modify `StorageTime` in the script to adjust how long hitboxes are stored before deletion:
 ```lua
-local StorageTime = 1 -- (in seconds)
+self.StorageTime = 1 -- (in seconds)
 ```
 Increasing this allows more history but may impact performance.
 
