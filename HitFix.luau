@@ -40,7 +40,7 @@ function HitFix:GetHitBox(player: Player, directory: string)
 	return HitFix.Registers[player][directory][latestTime]
 end
 
-function HitFix:ValidateHit(player: Player, part: BasePart, clientTimestamp: number, tolerance: number)
+function HitFix:ValidateHit(player: Player, part: CFrame, clientTimestamp: number, tolerance: number)
 	if RunService:IsClient() then return end
 	if not player then error("Player is nil") end
 	if not HitFix.Registers[player] then
@@ -52,22 +52,39 @@ function HitFix:ValidateHit(player: Player, part: BasePart, clientTimestamp: num
 
 	local target = HitFix.Registers[player].Local[clientTimestamp]
 	if not target then error("Local Time Doesn't Exist") end
+	
+	local serverTimeStamps = HitFix.Registers[player].Server
+	
+	local closestTime = HitFix:BinarySearchClosest(serverTimeStamps, clientTimestamp)
+	local distance = (target.Position - HitFix.Registers[player].Server[closestTime].Position).Magnitude
 
-	local serverTimestamps = {}
-	for time in pairs(HitFix.Registers[player].Server) do
-		table.insert(serverTimestamps, time)
-	end
-
-	table.sort(serverTimestamps)
-	local closestTime = HitFix:BinarySearchClosest(serverTimestamps, clientTimestamp)
-
-	if closestTime then
-		local distance = (target.Position - HitFix.Registers[player].Server[closestTime].Position).Magnitude
-		return distance < tolerance
-	else
+	if closestTime and distance < tolerance then
+		return Hitbox_Check(target, part, 90, 5, 5) -- TODO: make these numbers come from somewhere
+	elseif distance < tolerance then
 		warn("Could not find closest timestamp")
 		return false
+	else
+		error("Hitbox differs too much")
 	end
+end
+
+function Hitbox_Check(P1: CFrame, P2: CFrame, Range: number, Limit: number, VerticalLimit: number): boolean
+	--> Setup	
+	local Look = P1.LookVector --> Already is normalized
+	local Resultant = P2.Position - P1.Position
+	local Normal_Resultant = Resultant.Unit
+	local Distance = Resultant.Magnitude
+
+	--> Calculate
+	local Dot = Look:Dot(Normal_Resultant)
+	local Rad_Angle = math.acos(Dot)
+	local Deg_Angle = math.deg(Rad_Angle)
+
+	local In_Range = Distance <= Range
+	local In_View = Deg_Angle <= Limit
+	local Is_Hit = In_Range and In_View and math.abs(P1.Position.Y - P2.Position.Y) <= VerticalLimit
+
+	return Is_Hit
 end
 
 function HitFix:BinarySearchClosest(timestamps: {number}, target: number): number
